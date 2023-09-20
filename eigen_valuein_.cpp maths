@@ -1,0 +1,128 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+
+int calculateDeterminant(int** arr, int rows, int cols) {
+    // Base case: If the matrix is 1x1, return its only element
+    if (rows == 1 && cols == 1) {
+        return arr[0][0];
+    }
+
+    // Initialize the determinant value
+    int determinant = 0;
+
+    // Create a temporary submatrix
+    int** subMatrix = new int*[rows - 1];
+    for (int i = 0; i < rows - 1; ++i) {
+        subMatrix[i] = new int[cols - 1];
+    }
+
+    // Iterate through the first row to calculate the determinant
+    for (int j = 0; j < cols; ++j) {
+        // Create the submatrix by excluding the current row and column
+        int subRow = 0;
+        for (int i = 1; i < rows; ++i) {
+            int subCol = 0;
+            for (int k = 0; k < cols; ++k) {
+                if (k != j) {
+                    subMatrix[subRow][subCol] = arr[i][k];
+                    subCol++;
+                }
+            }
+            subRow++;
+        }
+
+        // Calculate the determinant recursively
+        int sign = (j % 2 == 0) ? 1 : -1;  // Alternating signs
+        determinant += sign * arr[0][j] * calculateDeterminant(subMatrix, rows - 1, cols - 1);
+    }
+
+    // Clean up memory for the submatrix
+    for (int i = 0; i < rows - 1; ++i) {
+        delete[] subMatrix[i];
+    }
+    delete[] subMatrix;
+
+    return determinant;
+}
+int main(){
+    int rows,col;
+    cout<<"Give the value of X and Y : ";
+    cin>>rows>>col;
+    int** arr = new int*[rows];
+    for (int i = 0; i < rows; i++)
+    {
+        arr[i] = new int[col];
+        for (int j = 0; j < col; j++)
+        {
+            cin>>arr[i][j];   
+        }
+        
+    }
+
+    
+    //initializing the identity matrix ;
+    int** id =new int*[rows];
+    for (int i = 0; i < rows; i++)
+    {
+        id[i] =new int[col];
+        for (int j = 0; j < col; j++)
+        {
+            if(i==j){
+                id[i][j] = 1;
+            }
+            else
+            {
+                id[i][j] =0;
+            }
+            
+        }
+        
+    }
+    
+    // A-λI
+    cout<<calculateDeterminant(arr,rows,col)<<endl;
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            arr[i][j] = arr[i][j] - id[i][j];
+            
+        }
+    }
+    cout<<endl;
+    
+
+    //Printing the  A-λI function
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < col; j++)
+        {
+            if (i==j)
+            {
+                cout<<arr[i][j]<<"-λ\t";
+            }
+            else
+            {
+                cout<<arr[i][j]<<"\t";
+            }
+            
+            
+        }
+        cout<<endl;
+    }
+
+   
+    
+
+    
+    for (int i = 0; i < rows; i++) {
+    delete[] arr[i]; 
+    delete[] id[i];
+    }
+    delete[] arr; 
+    delete[] id;
+
+
+}
